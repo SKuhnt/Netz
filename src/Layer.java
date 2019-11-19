@@ -10,4 +10,10 @@ public class Layer {
         this.prevLayer = prevLayer;
     }
 
+    private void calculateNextValues(){
+        double [] values = new double[nextLayer.neurons.length];
+
+    }
+
+
 }
