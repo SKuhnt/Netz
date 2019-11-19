@@ -2,20 +2,35 @@ import java.util.Arrays;
 
 public class Neuron {
 
-    private double[] gewichte;
+    private double[] weights;
     private double value;
 
     Neuron(int nextNeuronsAmount){
-        gewichte = new double[nextNeuronsAmount];
-        Arrays.setAll(gewichte, p -> Util.getGaussWeight(2));
+        weights = new double[nextNeuronsAmount];
+        Arrays.setAll(weights, p -> Util.getGaussWeight(2));
     }
 
-    public double calculateNextValue(){
-
+    public double calculateNextValue(int i){
+        return weights[i] * value;
     }
 
     public double[] calculateNextValues(){
-
+        double [] values = new double[weights.length];
+        for (int i = 0; i < weights.length; i++){
+            values[i] = calculateNextValue(i);
+        }
+        return values;
     }
 
+    public void setValue(double currentValue) {
+        this.value = currentValue;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public double[] getWeights() {
+        return weights;
+    }
 }
