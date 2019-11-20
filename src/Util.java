@@ -7,7 +7,7 @@ public class Util {
     }
 
     public static double calcSigmoid(double input){
-        return (1.0/(1+Math.exp(4.9 * -input)));
+        return (1.0/(1+Math.exp(1.0*-input)));
     }
 
 //    public static double calcDerivatedSigmoid(double input){
@@ -17,12 +17,12 @@ public class Util {
 
     public static double calcDerivatedSigmoid(double output){
         //derivative of a neuron output
-        return output*(1-output);
+        return calcSigmoid(output)*(1-calcSigmoid(output));
     }
 
     public static double calcOutputLayerError(double output,double expected){
         //error for each node
-        return expected-output*calcDerivatedSigmoid(output);
+        return (output-expected);//*calcDerivatedSigmoid(output);
     }
 
     public static double calcHiddenLayerError(double weight,double errorInNext,double outputCurrent){

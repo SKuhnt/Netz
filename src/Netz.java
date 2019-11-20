@@ -1,26 +1,69 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Netz {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
         Netz net = new Netz(2, 1);
 
         double[][] tests = {{1,1,0},{1,0,1},{0,0,0},{0,1,1}};
         Random rand = new Random();
-        for(int i = 0; i<1000;i++){
-            double[] set = tests[0];//tests[rand.nextInt(3)];
+
+        //System.out.println(net.toString());
+        for(int i = 0; i<10;i++){
+            double[] set = tests[rand.nextInt(3)];
             double[] x = new double[2];
             x[0]=set[0];
             x[1]=set[1];
 
             double[] y = new double[1];
             y[0]=set[2];
+            System.out.println("input: "+x[0]+" "+x[1]);
             net.runBatch(x,y);
         }
 
+        boolean serviceRequested = true;
+        Scanner sc = new Scanner(System.in);
+        while(serviceRequested){
+            System.out.println("input1:");
+            String in1 = sc.nextLine();
+            if(in1.startsWith("q")) {
+                System.out.println(net.toString());
+                break;
+            }
+            System.out.println("input2:");
+            String in2 = sc.nextLine();
+            if(in2.startsWith("q")) {
+                System.out.println(net.toString());
+                break;
+            }
+            System.out.println("expected: ");
+            String exp = sc.nextLine();
+            if(exp.startsWith("q")) {
+                System.out.println(net.toString());
+                break;
+            }
+            double[] x = new double[2];
+            x[0]=Double.parseDouble(in1);
+            x[1]=Double.parseDouble(in2);
+
+            double[] y = new double[1];
+            y[0]=Double.parseDouble(exp);
+
+            net.runBatch(x,y);
+
+//            System.out.println("print? y/N:");
+//            String print = sc.next();
+//            if(print.startsWith("y")){
+//                System.out.println(net.toString());
+//            }
+//            else if(print.startsWith("q")){
+//                System.out.println(net.toString());
+//                break;
+//            }
+
+        }
+
+        //System.out.println(net.toString());
 //        double[] t = {1,1};
 //        double[] e = {0};
 //        net.runBatch(t,e);
@@ -124,8 +167,9 @@ public class Netz {
             String nextLayerString=String.valueOf((char)('a'+i+1));
             for(int t = 0; t<layer.getNeurons().length;t++){
                 Neuron[] neurons = layer.getNeurons();
-                for(int n=0;n<neurons.length;n++){
-                    Neuron neuronFrom = neurons[t];
+                Neuron neuronFrom = neurons[t];
+                for(int n=0;n<neuronFrom.getWeights().length;n++){
+                    double weight = neuronFrom.getWeights()[n];
                     if(layer.getNext().getNeurons().length>n){
                         Neuron neuronTo = layer.getNext().getNeurons()[n];
 

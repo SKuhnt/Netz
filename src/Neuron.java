@@ -78,6 +78,6 @@ public class Neuron {
     }
 
     private double getLearningrate() {
-        return 0.25;
+        return 0.15;
     }
 }
