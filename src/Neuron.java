@@ -4,6 +4,7 @@ public class Neuron {
 
     private double[] weights;
     private double value;
+    private double error;
 
     Neuron(int nextNeuronsAmount){
         weights = new double[nextNeuronsAmount];
@@ -32,5 +33,21 @@ public class Neuron {
 
     public double[] getWeights() {
         return weights;
+    }
+
+    public double getWeightAt(int index){
+        return weights[index];
+    }
+
+    public double outoutDerivate(){
+        return value * (1 - value);
+    }
+
+    public double getError() {
+        return error;
+    }
+
+    public void setError(double error) {
+        this.error = error;
     }
 }

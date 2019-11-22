@@ -40,20 +40,34 @@ public class Layer {
 
     public void run(){
         if(nextLayer == null){
-            for (Neuron neuron : neurons){
-                System.out.println(neuron.getValue());
-            }
+            System.out.println(neurons[0].getValue());
         } else{
             calculateNextValues();
             nextLayer.run();
             //backtrack
-            int winnerNumber = 0;
-            for(int i = 0; i < neurons.length; i++){
-                double[] nextValues = neurons[i].calculateNextValues();
-                neurons[i].getWeights();
-                neurons[i].getValue();
-                for(int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayer.neurons.length; nextLayerNeuronIndex++){
-                    neurons[i].calculateNextValue(nextLayerNeuronIndex);
+            double[] y = new double[]{1, 0, 0, 0, 0};
+            double error = 0;
+            for (int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayer.neurons.length; nextLayerNeuronIndex++){
+                error += 2 * (nextLayer.neurons[nextLayerNeuronIndex].getValue() - y[nextLayerNeuronIndex]);
+            }
+            for(Neuron neuron : neurons){
+                for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
+                    /*int test = neuronIndex;
+                    double z = Arrays.stream(neurons).mapToDouble(neuronX -> neuronX.getValue() * neuronX.getWeightAt(test)).sum();
+                    neuron.getWeights()[neuronIndex] += neuron.getValue() * Util.calcSigmoidDerivate(z) * error;*/
+                }
+            }
+
+            for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
+                Neuron neuron = neurons[neuronIndex];
+                if (nextLayer == null){
+                    neuron.setError((neuron.getValue() - y[neuronIndex]) * neuron.outoutDerivate());
+                }else {
+                    double sum = 0;
+                    for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
+                        sum += neuron.getWeightAt(neuronIndex) * nextLayer.neurons[neuronIndex].getError();
+                    }
+                    neuron.setError(sum * neuron.outoutDerivate());
                 }
             }
         }

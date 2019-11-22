@@ -6,8 +6,8 @@ public class Netz {
 
     private int inputLayerAmout;
     private int outputLayerAmout;
-    private int layersAmount = 5;
-    private int hiddenNeuronAmount = 5;
+    private int layersAmount = 1;
+    private int hiddenNeuronAmount = 3;
     private Layer layers;
 
     Netz(int inputLayerAmout, int outputLayerAmout){
@@ -18,7 +18,9 @@ public class Netz {
     public void run(){
         layers = new Layer(inputLayerAmout, outputLayerAmout, hiddenNeuronAmount, layersAmount);
         layers.setInputs(new double[]{20, 0, 300});
-        layers.run();
+        for (int i =0; i < 1000; i++){
+            layers.run();
+        }
     }
 
 }
