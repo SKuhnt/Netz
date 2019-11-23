@@ -20,6 +20,7 @@ public class Netz {
         layers.setInputs(new double[]{20, 0, 300});
         for (int i =0; i < 1000; i++){
             layers.run();
+            layers.learn();
         }
     }
 
