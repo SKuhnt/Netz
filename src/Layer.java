@@ -6,6 +6,7 @@ public class Layer {
     private Layer nextLayer;
     private Layer prevLayer;
     private double trainingsRate = 0.6;
+    private double[] target = new double[]{1, 0, 0};
 
     public Layer(int inputNeurons, int outputNeurons, int hiddenNeurons, int hiddenLayers){
         if (hiddenLayers > 0){
@@ -47,12 +48,10 @@ public class Layer {
             nextLayer.run();
         }
         //backtrack
-        double[] y = new double[]{1, 0, 0};
-
         for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
             Neuron neuron = neurons[neuronIndex];
             if (nextLayer == null){
-                neuron.setError((neuron.getValue() - y[neuronIndex]) * neuron.valueDerivative());
+                neuron.setError((neuron.getValue() - target[neuronIndex]) * neuron.valueDerivative());
             }else {
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
@@ -79,9 +78,9 @@ public class Layer {
         if (nextLayer != null){
             for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++) {
                 Neuron neuron = neurons[neuronIndex];
+                double trainingsValue = - trainingsRate * neuron.getValue();
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
-                    double weightChange = -trainingsRate * neuron.getValue() * nextLayer.neurons[nextNeuronIndex].getError();
-                    neuron.getWeights()[nextNeuronIndex] += weightChange;
+                    neuron.getWeights()[nextNeuronIndex] += trainingsValue * nextLayer.neurons[nextNeuronIndex].getError();
                 }
             }
             nextLayer.learn();
