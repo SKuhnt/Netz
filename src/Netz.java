@@ -6,8 +6,8 @@ public class Netz {
 
     private int inputLayerAmout;
     private int outputLayerAmout;
-    private int layersAmount = 1;
-    private int hiddenNeuronAmount = 3;
+    private int layersAmount = 2;
+    private int hiddenNeuronAmount = 2;
     private Layer layers;
 
     Netz(int inputLayerAmout, int outputLayerAmout){

@@ -5,7 +5,7 @@ public class Layer {
     private Neuron[] neurons;
     private Layer nextLayer;
     private Layer prevLayer;
-    private double trainingsRate = 0.5;
+    private double trainingsRate = 0.6;
 
     public Layer(int inputNeurons, int outputNeurons, int hiddenNeurons, int hiddenLayers){
         if (hiddenLayers > 0){
@@ -47,18 +47,19 @@ public class Layer {
             nextLayer.run();
         }
         //backtrack
-        double[] y = new double[]{1, 0, 0, 0, 0};
+        double[] y = new double[]{1, 0, 0};
 
         for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
             Neuron neuron = neurons[neuronIndex];
             if (nextLayer == null){
-                neuron.setError((neuron.getValue() - y[neuronIndex]) * neuron.outoutDerivate());
+                neuron.setError((neuron.getValue() - y[neuronIndex]) * neuron.valueDerivative());
             }else {
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
-                    sum += neuron.getWeightAt(neuronIndex) * nextLayer.neurons[nextNeuronIndex].getError();
+                    sum += neuron.getWeightAt(nextNeuronIndex) * nextLayer.neurons[nextNeuronIndex].getError();
                 }
-                neuron.setError(sum * neuron.outoutDerivate());
+                double error = sum * neuron.valueDerivative();
+                neuron.setError(error);
             }
         }
     }
@@ -80,7 +81,7 @@ public class Layer {
                 Neuron neuron = neurons[neuronIndex];
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
                     double weightChange = -trainingsRate * neuron.getValue() * nextLayer.neurons[nextNeuronIndex].getError();
-                    neuron.getWeights()[neuronIndex] += weightChange;
+                    neuron.getWeights()[nextNeuronIndex] += weightChange;
                 }
             }
             nextLayer.learn();

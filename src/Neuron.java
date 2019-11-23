@@ -15,14 +15,6 @@ public class Neuron {
         return weights[i] * value;
     }
 
-    public double[] calculateNextValues(){
-        double [] values = new double[weights.length];
-        for (int i = 0; i < weights.length; i++){
-            values[i] = calculateNextValue(i);
-        }
-        return values;
-    }
-
     public void setValue(double currentValue) {
         this.value = currentValue;
     }
@@ -39,8 +31,8 @@ public class Neuron {
         return weights[index];
     }
 
-    public double outoutDerivate(){
-        return value * (1 - value);
+    public double valueDerivative(){
+        return value * (1.0 - value);
     }
 
     public double getError() {
