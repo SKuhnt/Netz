@@ -5,7 +5,7 @@ public class Layer {
     private Neuron[] neurons;
     private Layer nextLayer;
     private Layer prevLayer;
-    private double trainingsRate = 0.6;
+    private double trainingsRate = 0.5;
     private double[] target;
 
     public void setTarget(double[] target) {
@@ -50,6 +50,7 @@ public class Layer {
     public void run(){
         if(nextLayer == null) {
             System.out.println(neurons[0].getValue());
+            System.out.println(neurons[1].getValue());
         } else {
             calculateNextValues();
             nextLayer.run();
