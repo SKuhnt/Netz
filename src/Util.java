@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Util {
 
-    static Random random = new Random();
+    static Random random = new Random(1);
     //1, 2 nan
 
 

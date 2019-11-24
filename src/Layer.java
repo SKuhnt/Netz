@@ -6,7 +6,14 @@ public class Layer {
     private Layer nextLayer;
     private Layer prevLayer;
     private double trainingsRate = 0.6;
-    private double[] target = new double[]{1, 0, 0};
+    private double[] target;
+
+    public void setTarget(double[] target) {
+        this.target = target;
+        if (nextLayer != null){
+            nextLayer.setTarget(target);
+        }
+    }
 
     public Layer(int inputNeurons, int outputNeurons, int hiddenNeurons, int hiddenLayers){
         if (hiddenLayers > 0){
@@ -55,6 +62,7 @@ public class Layer {
             }else {
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
+                    //SUM of: weight of this neuron towards the next neuron * the error of the next neuron
                     sum += neuron.getWeightAt(nextNeuronIndex) * nextLayer.neurons[nextNeuronIndex].getError();
                 }
                 double error = sum * neuron.valueDerivative();

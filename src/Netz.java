@@ -1,13 +1,13 @@
 public class Netz {
 
     public static void main(String[] args){
-        new Netz(3, 3).run();
+        new Netz(3, 1).run();
     }
 
     private int inputLayerAmout;
     private int outputLayerAmout;
-    private int layersAmount = 2;
-    private int hiddenNeuronAmount = 2;
+    private int layersAmount = 3;
+    private int hiddenNeuronAmount = 3;
     private Layer layers;
 
     Netz(int inputLayerAmout, int outputLayerAmout){
@@ -17,11 +17,11 @@ public class Netz {
 
     public void run(){
         layers = new Layer(inputLayerAmout, outputLayerAmout, hiddenNeuronAmount, layersAmount);
-        layers.setInputs(new double[]{20, 0, 300});
-        for (int i =0; i < 1000; i++){
-            layers.run();
-            layers.learn();
-        }
+        TrainingData trainingData = new TrainingData();
+        trainingData.train(layers, 10000);
+        layers.setInputs(new double[]{22, 0, 300});
+        System.out.println("testRun");
+        layers.run();
     }
 
 }
