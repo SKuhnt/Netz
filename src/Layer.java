@@ -4,40 +4,27 @@ public class Layer {
 
     private Neuron[] neurons;
     private Layer nextLayer;
-    private Layer prevLayer;
-    private double trainingsRate = 0.5;
-    private double[] target;
+    private Netz netz;
+    private LayerType layerType;
 
-    public void setTarget(double[] target) {
-        this.target = target;
-        if (nextLayer != null){
-            nextLayer.setTarget(target);
-        }
+    public void setNeurons(Neuron[] neurons) {
+        this.neurons = neurons;
     }
 
-    public Layer(int inputNeurons, int outputNeurons, int hiddenNeurons, int hiddenLayers){
-        if (hiddenLayers > 0){
-            this.neurons = new Neuron[inputNeurons];
-            this.nextLayer = new Layer(outputNeurons, hiddenNeurons, hiddenLayers, this);
-            Arrays.setAll(neurons, array -> new Neuron(nextLayer.neurons.length));
-        } else {
-            throw new IllegalArgumentException("to few Layers");
-        }
+    public void setNextLayer(Layer nextLayer) {
+        this.nextLayer = nextLayer;
     }
 
-    private Layer(int outputNeurons, int hiddenNeurons, int hiddenLayers, Layer prevLayer){
-        this.prevLayer = prevLayer;
-        if (hiddenLayers != 0){
-            this.neurons = new Neuron[hiddenNeurons];
-            this.nextLayer = new Layer(outputNeurons, hiddenNeurons, hiddenLayers - 1, this);
-            Arrays.setAll(neurons, array -> new Neuron(nextLayer.neurons.length));
-        } else {
-            this.neurons = new Neuron[outputNeurons];
-            Arrays.setAll(neurons, array -> new Neuron(0));
-        }
+    public Neuron[] getNeurons() {
+        return neurons;
     }
 
-    public void setInputs(double[] inputs){
+    public Layer(Netz netz, LayerType layerType){
+        this.netz = netz;
+        this.layerType = layerType;
+    }
+
+    private void setInputs(double[] inputs){
         if (inputs.length != neurons.length){
             throw new IllegalArgumentException("müssen gleich lang sein");
         } else {
@@ -47,20 +34,50 @@ public class Layer {
         }
     }
 
-    public void run(){
-        if(nextLayer == null) {
-            System.out.println(neurons[0].getValue());
-            System.out.println(neurons[1].getValue());
-        } else {
-            calculateNextValues();
-            nextLayer.run();
+    public double[] run(double[] inputs, boolean isLearning){
+        if(layerType.equals(LayerType.Input)){
+            setInputs(inputs);
+            double[] result = calculateAndBacktrack(isLearning);
+            if (isLearning){
+                learn();
+            }
+            return result;
+        } else{
+            throw new IllegalArgumentException("inputs can only be given to the input Layer");
         }
-        //backtrack
+    }
+
+    private double[] calculateAndBacktrack(boolean isLearning){
+        double[] result = null;
+        if(nextLayer != null) {
+            calculateNextValues();
+            result = nextLayer.calculateAndBacktrack(isLearning);
+        }
+        if(isLearning){
+            backtrackError();
+        }
+        if (layerType.equals(LayerType.Output)){
+            result = Arrays.stream(neurons).mapToDouble(Neuron::getValue).toArray();
+        }
+        return result;
+    }
+
+    private void calculateNextValues(){
+        for(int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayer.neurons.length; nextLayerNeuronIndex++){
+            double currentValue = 0;
+            for (Neuron neuron : neurons) {
+                currentValue += neuron.calculateNextValue(nextLayerNeuronIndex);
+            }
+            nextLayer.neurons[nextLayerNeuronIndex].setValue(Util.calcSigmoid(currentValue));
+        }
+    }
+
+    private void backtrackError(){
         for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
             Neuron neuron = neurons[neuronIndex];
             if (nextLayer == null){
-                neuron.setError((neuron.getValue() - target[neuronIndex]) * neuron.valueDerivative());
-            }else {
+                neuron.setError((neuron.getValue() - netz.target[neuronIndex]) * neuron.valueDerivative());
+            } else {
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
                     //SUM of: weight of this neuron towards the next neuron * the error of the next neuron
@@ -72,22 +89,10 @@ public class Layer {
         }
     }
 
-    private void calculateNextValues(){
-        for(int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayer.neurons.length; nextLayerNeuronIndex++){
-            double currentValue = 0;
-            for(int i = 0; i < neurons.length; i++){
-                currentValue += neurons[i].calculateNextValue(nextLayerNeuronIndex);
-            }
-            nextLayer.neurons[nextLayerNeuronIndex].setValue(Util.calcSigmoid(currentValue));
-        }
-    }
-
-
-    public void learn() {
+    private void learn() {
         if (nextLayer != null){
-            for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++) {
-                Neuron neuron = neurons[neuronIndex];
-                double trainingsValue = - trainingsRate * neuron.getValue();
+            for (Neuron neuron : neurons) {
+                double trainingsValue = -netz.trainingsRate * neuron.getValue();
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
                     neuron.getWeights()[nextNeuronIndex] += trainingsValue * nextLayer.neurons[nextNeuronIndex].getError();
                 }

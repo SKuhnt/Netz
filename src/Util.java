@@ -3,8 +3,6 @@ import java.util.Random;
 public class Util {
 
     static Random random = new Random(1);
-    //1, 2 nan
-
 
     public static double getGaussWeight(int weightRange){
         return (random.nextGaussian()*weightRange)*(1.0*random.nextInt(2)==1?1:-1);
@@ -17,7 +15,6 @@ public class Util {
     public static double calcSigmoidDerivate(double input){
         double a = calcSigmoid(input);
         double b = 1 - calcSigmoid(input);
-        double x = a * b;
-        return x;
+        return a * b;
     }
 }
