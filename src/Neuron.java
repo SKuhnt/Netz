@@ -61,16 +61,28 @@ public class Neuron {
         for(int i=0;i<weights.length;i++){
             //calc errors
             if(isOutputLayer){
-                error += Util.calcHiddenLayerError(weights[i], parentLayer.getNext().getNeuron(i).getError(),getValue());
+                error = Util.calcHiddenLayerError(weights, getNextLayerErrors(),getValue());
             }
             else{
                 error = Util.calcOutputLayerError(value,getExpectedValue(i));
             }
         }
         for(int i=0;i<weights.length;i++){
-            weights[i]=Util.updateWeight(weights[i],getLearningrate(),error,value);
+            weights[i]+=Util.getUpdateWeight(value,getLearningrate(),getNextLayerError(i));
         }
 
+    }
+
+    private double getNextLayerError( int i){
+        return this.parentLayer.getNext().getNeuron(i).error;
+    }
+
+    private double[] getNextLayerErrors(){
+        double[] res = new double[weights.length];
+        for(int i = 0;i<res.length;i++){
+            res[i]=this.parentLayer.getNext().getNeuron(i).error;
+        }
+        return res;
     }
 
     private double getExpectedValue(int i) {
@@ -78,6 +90,6 @@ public class Neuron {
     }
 
     private double getLearningrate() {
-        return 0.15;
+        return 0.25;
     }
 }

@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class Util {
@@ -17,25 +18,37 @@ public class Util {
 
     public static double calcDerivatedSigmoid(double output){
         //derivative of a neuron output
-        return calcSigmoid(output)*(1-calcSigmoid(output));
+        //double deriv = calcSigmoid(output);
+        return output*(1.0-output);
+        //return deriv;
     }
 
     public static double calcOutputLayerError(double output,double expected){
         //error for each node
-        return (output-expected);//*calcDerivatedSigmoid(output);
+
+        double error = (expected-output)*calcDerivatedSigmoid(output);
+        //System.out.println("SIMPLE ERROR ="+(expected-output));
+        //System.out.println("ERROR CALC ="+error);
+        return error;
     }
 
-    public static double calcHiddenLayerError(double weight,double errorInNext,double outputCurrent){
+    public static double calcHiddenLayerError(double[] weights,double[] errorsInNext,double outputCurrent){
         //error for each node
-        return weight*errorInNext*calcDerivatedSigmoid(outputCurrent);
+        double sum = 0;
+        for(int i = 0; i<weights.length;i++) {
+            sum+=weights[i]*errorsInNext[i];
+        }
+
+        return sum*calcDerivatedSigmoid(outputCurrent);
     }
 
-    public static double updateWeight(double oldWeight, double learningrate, double error, double input){
-        return oldWeight + learningrate * error * input;
+    public static double getUpdateWeight(double value , double learningrate, double error){
+        double update =  -learningrate * value * error;
+        //System.out.println("error in next: "+error);
+        //System.out.println("value: "+value);
+        //System.out.println("update: "+update);
+        return update;
     }
-
-
-
 
     public static double calcCrossEntropyCost(double[] values, double[] targets, int dataAmt){
         //target,value,dataAmt

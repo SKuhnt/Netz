@@ -16,7 +16,7 @@ public class OutputLayer  {
 //            }
 //        }
 //        for(int i=0;i<weights.length;i++){
-//            weights[i]=Util.updateWeight(weights[i],getLearningrate(),error,value);
+//            weights[i]=Util.getUpdateWeight(weights[i],getLearningrate(),error,value);
 //        }
 //
 //    }
