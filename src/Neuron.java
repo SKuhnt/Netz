@@ -5,17 +5,31 @@ public class Neuron {
     private double[] weights;
     private double value;
     private double error;
+    private double bias;
 
     Neuron(int nextNeuronsAmount){
         weights = new double[nextNeuronsAmount];
         Arrays.setAll(weights, p -> Util.getGaussWeight(2));
+        bias = Util.getGaussWeight(2);
     }
 
     public double calculateNextValue(int i){
         return weights[i] * value;
     }
 
+    public void setBias(double currentValue) {
+        this.bias = currentValue;
+    }
+
+    public double getBias() {
+        return bias;
+    }
+
     public void setValue(double currentValue) {
+        this.value = currentValue;
+    }
+
+    public void initiateValue(double currentValue) {
         this.value = currentValue;
     }
 

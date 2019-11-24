@@ -29,7 +29,7 @@ public class Layer {
             throw new IllegalArgumentException("müssen gleich lang sein");
         } else {
             for (int i = 0; i < inputs.length; i++){
-                neurons[i].setValue(inputs[i]);
+                neurons[i].initiateValue(inputs[i]);//.setValue(inputs[i]);
             }
         }
     }
@@ -68,7 +68,7 @@ public class Layer {
             for (Neuron neuron : neurons) {
                 currentValue += neuron.calculateNextValue(nextLayerNeuronIndex);
             }
-            nextLayer.neurons[nextLayerNeuronIndex].setValue(Util.calcSigmoid(currentValue));
+            nextLayer.neurons[nextLayerNeuronIndex].setValue(Util.calcSigmoid(currentValue+nextLayer.neurons[nextLayerNeuronIndex].getBias()));
         }
     }
 
@@ -96,6 +96,7 @@ public class Layer {
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
                     neuron.getWeights()[nextNeuronIndex] += trainingsValue * nextLayer.neurons[nextNeuronIndex].getError();
                 }
+                neuron.setBias(neuron.getBias()+-netz.trainingsRate*(neuron.getBias()*neuron.getError()));
             }
             nextLayer.learn();
         }

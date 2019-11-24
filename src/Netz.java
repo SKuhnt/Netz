@@ -5,11 +5,16 @@ public class Netz {
 
     public static void main(String[] args){
         Netz n1 = new Netz();
-        n1.train(new TrainingData().inputOutputMap, 100);
-        System.out.println(Arrays.toString(n1.run(new double[]{0.19, 0.260})));
+        n1.train(new TrainingData().inputOutputMap, 10000);
+        System.out.println(Arrays.toString(n1.run(new double[]{0.5, 0.25})));
+        System.out.println(Arrays.toString(n1.run(new double[]{0.25, 0.25})));
+        System.out.println(Arrays.toString(n1.run(new double[]{0.1, 0.1})));
+
+
+        System.out.println(Arrays.toString(n1.run(new double[]{0.1, 0.1})));
     }
 
-    public double trainingsRate = 0.5;
+    public double trainingsRate = 0.61;
     public double[] target;
     public int inputLayerNeuron = 2;
     public int outputLayerNeuron = 1;
