@@ -7,12 +7,21 @@ public class TrainingData {
     Map<double[], double[]> inputOutputMap = new HashMap<>();
 
     public TrainingData() {
-        Random random = new Random(2);
-        for (int i = 0; i < 500; i++){
-            double a = random.nextDouble();
-            double b = random.nextDouble();
-            inputOutputMap.put(new double[]{a, b}, new double[]{Math.abs(a - b)});
-        }
+
+        inputOutputMap.put(new double[]{1, 1}, new double[]{0});
+        inputOutputMap.put(new double[]{0, 0}, new double[]{0});
+        inputOutputMap.put(new double[]{1, 0}, new double[]{1});
+        inputOutputMap.put(new double[]{0, 1}, new double[]{1});
+
+
+//        Random random = new Random(2);
+//        for (int i = 0; i < 500; i++){
+//            double a = random.nextDouble();
+//            double b = random.nextDouble();
+//            inputOutputMap.put(new double[]{a, b}, new double[]{Math.abs(a - b),(a-b)>0?0:1});
+//        }
+
+
 /*
         inputOutputMap.put(new double[]{0.18, 0.060}, new double[]{0});
         inputOutputMap.put(new double[]{0.18, 0.120}, new double[]{0});

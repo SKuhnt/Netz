@@ -19,6 +19,10 @@ public class Layer {
         return neurons;
     }
 
+    public LayerType getLayerType() {
+        return layerType;
+    }
+
     public Layer(Netz netz, LayerType layerType){
         this.netz = netz;
         this.layerType = layerType;
@@ -73,11 +77,22 @@ public class Layer {
     }
 
     private void backtrackError(){
-        for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
-            Neuron neuron = neurons[neuronIndex];
-            if (nextLayer == null){
-                neuron.setError((neuron.getValue() - netz.target[neuronIndex]) * neuron.valueDerivative());
-            } else {
+        if(nextLayer==null){//outputlayer
+            for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
+                Neuron neuron = neurons[neuronIndex];
+                //neuron.setError(0.5*Math.pow(netz.target[neuronIndex] - neuron.getValue(),2.0));// * neuron.valueDerivative());
+                //neuron.setError((netz.target[neuronIndex]-neuron.getValue()>0?-1:1)*Math.pow((netz.target[neuronIndex]-neuron.getValue()),2.0) * neuron.valueDerivative());
+                neuron.setError(-(netz.target[neuronIndex]-neuron.getValue()));
+                //neuron.setError(netz.target[neuronIndex]-neuron.getValue()>0?-1:1*Math.pow(netz.target[neuronIndex]-neuron.getValue(),2.0));
+//                double y = netz.target[neuronIndex];
+//                double a = neuron.getValue();
+//                neuron.setError((y*Math.log(a)+(1-y)*Math.log(1-a) ));
+            }
+        }
+        else{
+            nextLayer.backtrackError();
+            for(int neuronIndex = 0; neuronIndex < neurons.length; neuronIndex++){
+                Neuron neuron = neurons[neuronIndex];
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
                     //SUM of: weight of this neuron towards the next neuron * the error of the next neuron
@@ -94,11 +109,34 @@ public class Layer {
             for (Neuron neuron : neurons) {
                 double trainingsValue = -netz.trainingsRate * neuron.getValue();
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
-                    neuron.getWeights()[nextNeuronIndex] += trainingsValue * nextLayer.neurons[nextNeuronIndex].getError();
+                    neuron.setWeightUpdates(nextNeuronIndex,neuron.getWeightUpdates()[nextNeuronIndex] + trainingsValue * nextLayer.neurons[nextNeuronIndex].getError());
                 }
-                neuron.setBias(neuron.getBias()+-netz.trainingsRate*(neuron.getBias()*neuron.getError()));
+                neuron.setBiasUpdate(neuron.getBiasUpdate()+-netz.trainingsRate*(neuron.getError()));
             }
             nextLayer.learn();
+        }
+    }
+
+    public void applyLearned() {
+        if (nextLayer != null){
+            for (Neuron neuron : neurons) {
+                for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
+                    neuron.setWeightAt(nextNeuronIndex,neuron.getWeightAt(nextNeuronIndex)+neuron.getWeightUpdates()[nextNeuronIndex]);
+                }
+                neuron.setBias(neuron.getBias()+neuron.getBiasUpdate());
+                neuron.resetWeightAndBiasUpdates();
+            }
+            nextLayer.applyLearned();
+        }
+    }
+
+    public void resetValuesAndErrors(){
+        for (Neuron neuron : neurons) {
+            neuron.setError(0);
+            neuron.setValue(0);
+        }
+        if (nextLayer != null){
+            nextLayer.resetValuesAndErrors();
         }
     }
 }
