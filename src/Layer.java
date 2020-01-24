@@ -92,9 +92,8 @@ public class Layer {
     private void learn() {
         if (nextLayer != null){
             for (Neuron neuron : neurons) {
-                double trainingsValue = -netz.trainingsRate;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++) {
-                    neuron.getWeights()[nextNeuronIndex] += trainingsValue * nextLayer.neurons[nextNeuronIndex].getError();
+                    neuron.getWeights()[nextNeuronIndex] += (-netz.trainingsRate) * nextLayer.neurons[nextNeuronIndex].getError();
                 }
             }
             nextLayer.learn();
