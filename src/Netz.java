@@ -6,7 +6,7 @@ public class Netz {
     public static void main(String[] args){
         Netz n1 = new Netz();
         n1.train(new TrainingData().inputOutputMap, 100);
-        System.out.println(Arrays.toString(n1.run(new double[]{0.19, 0.260})));
+        System.out.println(Arrays.toString(n1.run(new double[]{0.30, 0.260})));
     }
 
     public double trainingsRate = 0.5;
