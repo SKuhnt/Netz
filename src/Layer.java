@@ -64,8 +64,10 @@ public class Layer {
 
     private void calculateNextValues(){
         for(int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayer.neurons.length; nextLayerNeuronIndex++){
+            // nextLayerNeuronIndex = k
             double currentValue = 0;
             for (Neuron neuron : neurons) {
+                // neuron ist Layer[l].neuron[j]
                 currentValue += neuron.calculateNextValue(nextLayerNeuronIndex);
             }
             nextLayer.neurons[nextLayerNeuronIndex].setValue(Util.calcSigmoid(currentValue));
@@ -78,6 +80,7 @@ public class Layer {
             if (nextLayer == null){
                 neuron.setError((neuron.getValue() - netz.target[neuronIndex]) * neuron.valueDerivative());
             } else {
+                //neuronIndex = j; nextNeuronIndex = k;
                 double sum = 0;
                 for (int nextNeuronIndex = 0; nextNeuronIndex < nextLayer.neurons.length; nextNeuronIndex++){
                     //SUM of: weight of this neuron towards the next neuron * the error of the next neuron

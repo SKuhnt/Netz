@@ -11,8 +11,8 @@ public class Neuron {
         Arrays.setAll(weights, p -> Util.getGaussWeight(2));
     }
 
-    public double calculateNextValue(int i){
-        return weights[i] * value;
+    public double calculateNextValue(int k){
+        return weights[k] * value;
     }
 
     public void setValue(double currentValue) {
